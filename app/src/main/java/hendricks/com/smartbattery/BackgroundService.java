@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.lang.System;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
@@ -22,13 +24,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
+import android.text.format.DateFormat;
 
 public class BackgroundService extends Service {
 
     BatteryManager battery;
     int batteryStatusInt;
-    double batteryVoltage, batteryTemperature, batterySOC, batteryScale, batteryLevel;
+    double batteryVoltage, batteryTemperature, batterySOC, batteryScale, batteryLevel, time, batteryCurrent;
     boolean isCharging, acCharge, usbCharge,isPlugged,isFull, isRunning;
+    long currentTime;
     Context context = this;
 
     public BackgroundService() {
@@ -70,11 +74,18 @@ public class BackgroundService extends Service {
                     batteryLevel = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL,-1);
                     batteryScale = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
                     batterySOC = (double) batteryLevel/batteryScale;
-
                     //temp
-                    double time = 0.0;
-                    double batteryCurrent = 1.0;
+                    android.text.format.DateFormat df = new android.text.format.DateFormat();
+                    String time = (String) df.format("MM-dd-yyyy kk:mm:ss", new java.util.Date());
 
+                    batteryCurrent = 1.0;
+                    BatteryManager bm = new BatteryManager();
+                    if (Build.VERSION.SDK_INT>=21) {
+                        batteryCurrent = (double) bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+                    }
+                    else {
+                        batteryCurrent = 0.0;
+                    }
                     isPlugged = usbCharge || acCharge;
 
                     //Add to Database
@@ -93,8 +104,8 @@ public class BackgroundService extends Service {
 
         Thread background = new Thread(launchService);
         background.start();
-
     }
+
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.

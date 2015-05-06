@@ -5,6 +5,9 @@ package hendricks.com.smartbattery;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -45,11 +48,11 @@ public class BatteryDatabase extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    void addEntry(double time, double voltage, double temperature, double soc, double current){
+    void addEntry(String time, double voltage, double temperature, double soc, double current){
         SQLiteDatabase db = this.getWritableDatabase();
         String insertSQL = "INSERT INTO " +  tableName + " (" + columnTime + "," +
                 columnVoltage + "," + columnTemperature + "," + columnSOC +
-                "," + columnCurrent + ") VALUES ('" + Double.toString(time) +"','" +
+                "," + columnCurrent + ") VALUES ('" + time +"','" +
                 Double.toString(voltage) + "','" + Double.toString(temperature) + "','" + Double.toString(soc) +
                 "','" + Double.toString(current) + "');";
         db.execSQL(insertSQL);
@@ -57,64 +60,24 @@ public class BatteryDatabase extends SQLiteOpenHelper{
         db.close();
     }
 
-    /*public int getWins(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String countWins = "SELECT " + columnWin +" FROM " + tableName + " WHERE " + columnWin + "= \"y\";";
-        Cursor cursor = db.rawQuery(countWins, null);
-        cursor.moveToFirst();
-        cursor.close();
-        return cursor.getCount();
-    }
-
-    public int getLosses(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String countLosses = "SELECT " + columnWin +" FROM " + tableName + " WHERE " + columnWin + "= \"n\";";
-        Cursor cursor = db.rawQuery(countLosses, null);
-        cursor.moveToFirst();
-        cursor.close();
-        return cursor.getCount();
-    }
-    //TODO Test this
-    public float getAvgCornholes(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String denom = "SELECT " + columnPlayerAvgCornholes + " FROM " + tableName + ";";
-        Cursor cursor = db.rawQuery(denom,null);
-        cursor.moveToFirst();
-        int denomInt = cursor.getCount();
-        cursor.close();
-        String sumAvg = "SELECT SUM(" + columnPlayerAvgCornholes + ") FROM " + tableName + ";";
-        Cursor cursorNum = db.rawQuery(sumAvg, null);
-        cursorNum.moveToFirst();
-        float numFloat = (float) cursorNum.getFloat(0);
-        cursorNum.close();
-        return numFloat/denomInt;
-    }
-
-
-    //TODO Test this
-    public float getAvgOnBoard(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String denom = "SELECT " + columnPlayerAvgOnBoard + " FROM " + tableName + ";";
-        Cursor cursor = db.rawQuery(denom,null);
-        cursor.moveToFirst();
-        int denomInt = cursor.getCount();
-        cursor.close();
-        String sumAvg = "SELECT SUM(" + columnPlayerAvgOnBoard + ") FROM " + tableName + ";";
-        Cursor cursorNum = db.rawQuery(sumAvg, null);
-        cursorNum.moveToFirst();
-        float numFloat = (float) cursorNum.getFloat(0);
-        cursorNum.close();
-        return numFloat/denomInt;
-    }
-
-
-    public int getGames(){
+//Need to test
+    public int getEntries(){
+        ArrayList<String> aList = new ArrayList<String>();
         String countEntries = "SELECT * FROM " + tableName;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countEntries, null);
         cursor.moveToFirst();
+        while (cursor.isAfterLast()==false){
+            String currRow = cursor.getString(0) + "," +
+                    cursor.getString(1) + "," +
+                    cursor.getString(2) + "," +
+                    cursor.getString(3) + "," +
+                    cursor.getString(4);
+            aList.add(currRow);
+            cursor.moveToNext();
+        }
         cursor.close();
         return cursor.getCount();
-    }*/
+    }
 
 }

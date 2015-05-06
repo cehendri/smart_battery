@@ -24,6 +24,7 @@ public class MainActivity extends ActionBarActivity {
     Context context;
     private Handler batteryHandler;
     private int i=0;
+    BatteryDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,44 +86,11 @@ public class MainActivity extends ActionBarActivity {
         main_layout = (RelativeLayout) findViewById(R.id.main_layout);
     }
 
-    private void launchPluggedCheck() {
-        Runnable launchPluggedCheck = new Runnable(){
-            @Override
-            public void run() {
-/*
-                IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-                Intent batteryStatus= context.registerReceiver(null, filter);
-                batteryStatusInt = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-                usbCharge = batteryStatusInt == BatteryManager.BATTERY_PLUGGED_USB;
-                acCharge = batteryStatusInt == BatteryManager.BATTERY_PLUGGED_AC;
-                isFull = batteryStatusInt == BatteryManager.BATTERY_STATUS_FULL;
-                batteryVoltage = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1)/1000.0);
-                batteryTemperature = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,-1)/10.0);
-                batteryLevel = (float) batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL,-1);
-                batteryScale = (float) batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                batterySOC = (float) batteryLevel/batteryScale;
+    private void getDatabase(){
+        db = new BatteryDatabase(getApplicationContext());
+    }
 
-                isPlugged = usbCharge || acCharge;
+    private void saveDatabase(){
 
-
-                if (isPlugged){
-                    statusTextView.setText("I am Plugged In");
-                    voltageTextView.setText(Float.toString(batteryVoltage));
-                    temperatureTextView.setText(Float.toString(batteryTemperature));
-                    SOCTextView.setText(Float.toString(batterySOC));
-                    batteryHandler.postDelayed(this,5000);
-                }
-                if (!isPlugged || isFull){
-                    statusTextView.setText("Unplugged");
-                    voltageTextView.setText(Float.toString(batteryVoltage));
-                    temperatureTextView.setText(Float.toString(batteryTemperature));
-                    SOCTextView.setText(Float.toString(batterySOC));
-                    batteryHandler.postDelayed(this,5000);
-                }*/
-            }
-
-        }; //end runnable
-        batteryHandler.post(launchPluggedCheck);
-
-    }//end launchPluggedCheck()
+    }
 }
